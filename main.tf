@@ -21,12 +21,12 @@ provider "snowflake" {
     private_key       = file(local.private_key_path)
 }
 resource "snowflake_database" "tf_db" {
-  name         = "TF_DEMO_DB"
+  name         = "TF_DEMO2_DB"
   is_transient = false
 }
 
 resource "snowflake_warehouse" "tf_warehouse" {
-  name                      = "TF_DEMO_WH"
+  name                      = "TF_DEMO2_WH"
   warehouse_type            = "STANDARD"
   warehouse_size            = "XSMALL"
   max_cluster_count         = 1
