@@ -1,5 +1,5 @@
 # .github/workflows/deploy.yml
-name: 'Terraform Snowflake CI/CD'on:
+name: 'deploy'on:
   push:
     branches:
       - main
