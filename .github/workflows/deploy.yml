@@ -13,8 +13,10 @@ on:
     if: github.event_name == 'pull_request'
 steps:
       - name: Checkout
-        uses: actions/checkout@v4      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3      - name: Configure AWS Credentials for Terraform Backend
+        uses: actions/checkout@v4      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3      
+      - name: Configure AWS Credentials for Terraform Backend
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
