@@ -1,0 +1,46 @@
+# .github/workflows/deploy.yml
+name: 'Terraform Snowflake CI/CD'on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - mainjobs:
+  plan:
+    name: 'Terraform Plan'
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+steps:
+      - name: Checkout
+        uses: actions/checkout@v4      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3 
+      - name: Terraform Init
+        run: terraform init
+      - name: Terraform Validate
+        run: terraform validate
+      - name: Terraform Plan
+        run: |
+          export TF_VAR_snowflake_private_key="${{ secrets.SNOWFLAKE_PRIVATE_KEY }}"
+          export TF_VAR_snowflake_user="${{ secrets.SNOWFLAKE_USER }}"
+          export TF_VAR_snowflake_account="${{ secrets.SNOWFLAKE_ACCOUNT }}"
+          terraform plan -no-color -out=tfplan
+  apply:
+    name: 'Terraform Apply'
+    runs-on: ubuntu-latest
+    environment: production # This is the key for manual approval
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: plan
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+     - name: Terraform Init
+        run: terraform init
+      - name: Terraform Apply
+        run: |
+          export TF_VAR_snowflake_private_key="${{ secrets.SNOWFLAKE_PRIVATE_KEY }}"
+          export TF_VAR_snowflake_user="${{ secrets.SNOWFLAKE_USER }}"
+          export TF_VAR_snowflake_account="${{ secrets.SNOWFLAKE_ACCOUNT }}"
+          terraform apply -auto-approve
